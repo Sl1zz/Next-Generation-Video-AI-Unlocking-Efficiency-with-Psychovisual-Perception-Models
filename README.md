@@ -2,9 +2,7 @@
 Perception-aware video inference for computer vision. This repo explores how to cut compute and memory by ignoring redundant, non-salient frames and features, aligning models with what humans reliably perceive. Goal: faster, lighter, more robust video recognition with fewer errors from unlabeled, irrelevant stimuli.
 
 
-# Next-Gen Video AI: Perception-Aware Inference for Efficient Recognition
 
-> Aligning video models with human perception to cut redundant compute and boost accuracy.
 
 
 
