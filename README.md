@@ -26,7 +26,7 @@ Videos contain lots of content people **don’t actually see** at normal viewing
 ## Dataset
 - Source: RED Komodo 6K captures → 1080p (1920×1080), 25 fps; H.264 for delivery.
 - Annotations: 6,257 boxes (person 2,787; vehicle 3,470) over 1,080 frames.
-- Two training sets: **Dataset 1 (unfiltered)**, **Dataset 2 (perception-filtered)**; identical labels. :contentReference[oaicite:11]{index=11}
+- Two training sets: **Dataset 1 (unfiltered)**, **Dataset 2 (perception-filtered)**; 
 
 
 
