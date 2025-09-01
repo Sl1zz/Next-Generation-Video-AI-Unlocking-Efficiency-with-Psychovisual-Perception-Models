@@ -33,17 +33,22 @@ Videos contain lots of content people **don’t actually see** at normal viewing
 
 Here are sample frames from both datasets:
 
+## Dataset Preview
+
+Here are sample frames from both datasets:
+
 ### Dataset 1 – Unfiltered
 | Frame 1 | Frame 2 | Frame 3 | Frame 4 | Frame 5 | Frame 6 |
 |---------|---------|---------|---------|---------|---------|
-| ![D1-1](data/samples/dataset1/frame1.jpg) | ![D1-2](data/samples/dataset1/frame2.jpg) | ![D1-3](data/samples/dataset1/frame3.jpg) | ![D1-4](data/samples/dataset1/frame4.jpg) | ![D1-5](data/samples/dataset1/frame5.jpg) | ![D1-6](data/samples/dataset1/frame6.jpg) |
+| ![D1-1](data/samples/dataset1_unfiltered/frame1.jpg) | ![D1-2](data/samples/dataset1_unfiltered/frame2.jpg) | ![D1-3](data/samples/dataset1_unfiltered/frame3.jpg) | ![D1-4](data/samples/dataset1_unfiltered/frame4.jpg) | ![D1-5](data/samples/dataset1_unfiltered/frame5.jpg) | ![D1-6](data/samples/dataset1_unfiltered/frame6.jpg) |
 
 ### Dataset 2 – Perception-Filtered
 | Frame 1 | Frame 2 | Frame 3 | Frame 4 | Frame 5 | Frame 6 |
 |---------|---------|---------|---------|---------|---------|
-| ![D2-1](data/samples/dataset2/frame1.jpg) | ![D2-2](data/samples/dataset2/frame2.jpg) | ![D2-3](data/samples/dataset2/frame3.jpg) | ![D2-4](data/samples/dataset2/frame4.jpg) | ![D2-5](data/samples/dataset2/frame5.jpg) | ![D2-6](data/samples/dataset2/frame6.jpg) |
+| ![D2-1](data/samples/dataset2_filtered/frame1.jpg) | ![D2-2](data/samples/dataset2_filtered/frame2.jpg) | ![D2-3](data/samples/dataset2_filtered/frame3.jpg) | ![D2-4](data/samples/dataset2_filtered/frame4.jpg) | ![D2-5](data/samples/dataset2_filtered/frame5.jpg) | ![D2-6](data/samples/dataset2_filtered/frame6.jpg) |
 
 > Note: Full datasets are hosted on [Roboflow](https://universe.roboflow.com/) – see [Dataset Access](#dataset-access).
+
 
 
 ---
