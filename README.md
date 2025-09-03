@@ -43,7 +43,7 @@ Here are sample frames from both datasets:
 |---------|---------|---------|---------|---------|---------|
 | ![D2-1](data/samples/dataset2_filtered/frame1.jpg) | ![D2-2](data/samples/dataset2_filtered/frame2.jpg) | ![D2-3](data/samples/dataset2_filtered/frame3.jpg) | ![D2-4](data/samples/dataset2_filtered/frame4.jpg) | ![D2-5](data/samples/dataset2_filtered/frame5.jpg) | ![D2-6](data/samples/dataset2_filtered/frame6.jpg) |
 
-> Note: If you're interested in the full annotated dataset please contact me at [Rogers10@student.eit.ac.nz](mailto:Rogers10@student.eit.ac.nz).
+> Note: If you're interested in the full annotated dataset please contact me at [eit.s.rogers@gmail.com](mailto:eit.s.rogers@gmail.com).
 
 
 
