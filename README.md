@@ -94,6 +94,13 @@ Across all models, training on the **perception-filtered** set improved accuracy
 <img width="685" height="335" alt="image" src="https://github.com/user-attachments/assets/74643bcd-8cd8-4b96-828a-21fa2a003412" />
 <img width="649" height="590" alt="image" src="https://github.com/user-attachments/assets/be8fd913-e140-4265-88a9-74904a4d0af6" />
 
+## Test Frame Comparisons
+
+| Unfiltered Test | Filtered Test | Original |
+|-----------------|---------------|----------|
+| <img src="data/samples/test_images/frame_0111unfiltered.png" width="250"/> | <img src="data/samples/test_images/frame_0111filtered.png" width="250"/> | <img src="data/samples/test_images/frame_0111original.png" width="250"/> |
+| <img src="data/samples/test_images/frame_0133unfiltered.png" width="250"/> | <img src="data/samples/test_images/frame_0133filtered.png" width="250"/> | <img src="data/samples/test_images/frame_0133original.png" width="250"/> |
+| <img src="data/samples/test_images/frame_0316unfiltered.png" width="250"/> | <img src="data/samples/test_images/frame_0316filtered.png" width="250"/> | <img src="data/samples/test_images/frame_0316original.png" width="250"/> |
 
 ---
 
