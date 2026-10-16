@@ -1,151 +1,112 @@
-# PSNR-VR: A Full-Reference Quality Metric for Wide-Angle VR Video
+# Next Gen Video AI Unlocking Efficiency with Psychovisual Perception Models
+Perception-aware video inference for computer vision. This repo explores how to cut compute and memory by ignoring redundant, non-salient frames and features, aligning models with what humans reliably perceive. Goal: faster, lighter, more robust video recognition with fewer errors from unlabeled, irrelevant stimuli.
 
-**Mean opinion scores, objective metric outputs and correlation results** accompanying the paper:
 
-> S. J. Rogers, T. Weti, G. A. Voronkov, P. Delmas, and A. Mozhaeva, "PSNR-VR: A Full-Reference Quality Metric for Wide-Angle VR Video Incorporating Human Visual System Models," *under review*, 2026.
 
-PSNR-VR keeps the simple PSNR formulation but weights pixel errors by how visible they are to a human viewer. It uses models of spatial, temporal and peripheral visual sensitivity, centred on a region of interest (ROI). This repository contains the data needed to check and reproduce the paper's evaluation. It does not include the metric implementation.
 
----
+
 
 ## At a Glance
-
-| | |
-|---|---|
-| **Content** | 7 wide-angle (360°) source videos from LIVE-FBT-FCVR, 7680 × 3840 |
-| **Distortions** | Foveated VP9 compression at CRF 51 (higher quality) and CRF 63 (lower quality) |
-| **Test sequences** | 14 (7 contents × 2 levels) |
-| **Observers** | 20 participants, aged 20–40 |
-| **Display** | HTC Vive Pro 2 (2448 × 2448 per eye, 120 Hz, 120° FoV) |
-| **Method** | ITU-R BT.500 single stimulus continuous quality (SSCQ), 0–5 scale |
-| **Metrics compared** | PSNR-VR, PSNR-sp-VR, PSNR, SSIM, BRISQUE, FovVideoVDP |
-
-### Key result
-
-| Metric | PLCC | PLCC 95% CI | SROCC | p vs PSNR-VR (Williams) |
-|---|---|---|---|---|
-| **PSNR-VR** | **0.939** | [0.81, 0.98] | **0.894** | – |
-| FovVideoVDP | 0.935 | [0.80, 0.98] | 0.855 | 0.903 (not significant) |
-| PSNR-sp-VR | 0.875 | [0.64, 0.96] | 0.788 | 0.082 |
-| SSIM | 0.811 | [0.49, 0.94] | 0.866 | 0.042 |
-| PSNR | 0.662 | [0.20, 0.88] | 0.684 | 0.006 |
-| BRISQUE | 0.587 | [0.08, 0.85] | 0.488 | 0.013 |
-
-PSNR-VR correlates significantly better with MOS than PSNR, SSIM and BRISQUE (two-tailed Williams test, α = 0.05). It is statistically equivalent to FovVideoVDP while using a much simpler closed-form formulation, at roughly one third of FovVideoVDP's per-frame CPU processing time in our implementation.
+We filter non-perceptible spatiotemporal content before training/inference, guided by human contrast sensitivity and retinal receptor distribution. Results: ~15% dataset redundancy reduction and ~3.5% mean accuracy gain across diverse detectors, with faster convergence and lower resource use. 
 
 ---
 
-## Repository Contents
+## Why perception-aware?
+Videos contain lots of content people **don’t actually see** at normal viewing conditions. Penalizing models for unlabeled, irrelevant stimuli adds compute and error. We apply a psychovisual weighting that emphasizes centrally perceived motion/structure while down-weighting imperceptible frequencies—yielding simpler, more “human-like” inputs. 
 
-```
-data/
-├── metric_scores.csv        # All metric outputs + MOS for the 14 sequences (paper Table I)
-└── correlations.csv         # PLCC / SROCC, 95% CIs, Williams-test p-values, within-CRF results (paper Table II)
-LICENSE
-README.md
-```
+**Method sketch.** We estimate motion + region-of-interest, apply spatiotemporal contrast sensitivity within ROI and a peripheral falloff tied to photoreceptor density, then invert to a CV-friendly frame. (See paper for equations and pipeline diagram.)
 
-### `metric_scores.csv`
 
-| Column | Description |
-|---|---|
-| `content` | Source video name (LIVE-FBT-FCVR) |
-| `crf` | VP9 constant rate factor (51 or 63) |
-| `psnr_vr_db` | PSNR-VR, dB (higher is better) |
-| `psnr_db` | Standard luma PSNR, dB |
-| `ssim` | SSIM, 0–1 |
-| `fovvideovdp_jod` | FovVideoVDP, JOD units (higher is better) |
-| `brisque` | BRISQUE, 0–100 (**lower is better**; sign reversed for correlation) |
-| `psnr_sp_vr_db` | PSNR-sp-VR (no temporal weighting), dB |
-| `mos` | Mean opinion score, 0 (Bad) – 5 (Excellent) |
+<img width="1076" height="586" alt="image" src="https://github.com/user-attachments/assets/f685d496-8d87-4115-827a-4eae92ae4255" />
 
 ---
 
-## Test Content
 
-| Content | Scene |
-|---|---|
-| Coco | Market square |
-| EER | Shopping centre |
-| Microsoft | Inside store |
-| Oasis | Restaurant |
-| Sculpture | Riverbank |
-| Stadium | Road view |
-| Waterfall | Park |
 
-Three further LIVE-FBT-FCVR contents (Playground, SanJacinto and Starbucks) were excluded from the metric evaluation; see Section IV-A and the Discussion of the paper.
+## Dataset
+- Source: RED Komodo 6K captures → 1080p (1920×1080), 25 fps; H.264 for delivery.
+- Annotations: 6,257 boxes (person 2,787; vehicle 3,470) over 1,080 frames.
+- Two training sets: **Dataset 1 (unfiltered)**, **Dataset 2 (perception-filtered)**
+- one independent unseen test video to test the model on  
 
-The source and compressed videos belong to the **LIVE-FBT-FCVR** database and are **not redistributed here**. Request them from the University of Texas at Austin: <http://live.ece.utexas.edu/research/LIVEFBTFCVR/>
+## Dataset Preview
 
----
+Here are sample frames from both datasets:
 
-## Subjective Experiment
+### Dataset 1 – Unfiltered
+| Frame 1 | Frame 2 | Frame 3 | Frame 4 | Frame 5 | Frame 6 |
+|---------|---------|---------|---------|---------|---------|
+| ![D1-1](data/samples/dataset1_unfiltered/frame1.jpg) | ![D1-2](data/samples/dataset1_unfiltered/frame2.jpg) | ![D1-3](data/samples/dataset1_unfiltered/frame3.jpg) | ![D1-4](data/samples/dataset1_unfiltered/frame4.jpg) | ![D1-5](data/samples/dataset1_unfiltered/frame5.jpg) | ![D1-6](data/samples/dataset1_unfiltered/frame6.jpg) |
 
-The ratings were collected in our earlier controlled VR study (Mozhaeva et al., IVCNZ 2025) and are reused here for the first time to evaluate objective metrics.
+### Dataset 2 – Perception-Filtered
+| Frame 1 | Frame 2 | Frame 3 | Frame 4 | Frame 5 | Frame 6 |
+|---------|---------|---------|---------|---------|---------|
+| ![D2-1](data/samples/dataset2_filtered/frame1.jpg) | ![D2-2](data/samples/dataset2_filtered/frame2.jpg) | ![D2-3](data/samples/dataset2_filtered/frame3.jpg) | ![D2-4](data/samples/dataset2_filtered/frame4.jpg) | ![D2-5](data/samples/dataset2_filtered/frame5.jpg) | ![D2-6](data/samples/dataset2_filtered/frame6.jpg) |
 
-- Sequences (10 s each) were shown in random order on a Vive Pro 2.
-- Participants were instructed to look at a fixed point marked at the centre of the region of interest defined in Jin et al. (SPIE 2020).
-- After each sequence, a rating bar with five anchors (Bad, Poor, Fair, Good, Excellent) appeared, and participants selected a continuous value from 0 to 5.
-- Head orientation was tracked by the HMD. Trials with an average deviation from the fixation point above 5% per frame were removed (less than 4% of observations).
-- MOS is the mean of the retained ratings, reported with its 95% confidence interval following ITU-R BT.500.
+> Note: If you're interested in the full annotated dataset please contact me at [eit.s.rogers@gmail.com](mailto:eit.s.rogers@gmail.com).
 
-**Ethics:** The study was approved by the Research Ethics Approvals Committee of the Eastern Institute of Technology (LR18140725). All participants gave written informed consent.
+
+
 
 ---
 
-## Evaluation Protocol
+## Method & Baselines
 
-- **PLCC** measures linear agreement with MOS. **SROCC** measures whether the metric ranks sequences in the same order as viewers.
-- 95% confidence intervals for PLCC use the Fisher *z*-transformation (n = 14).
-- PLCC differences are tested with the two-tailed Williams test for dependent correlations (Steiger, 1980) at α = 0.05, over all 14 sequences and within each compression level (n = 7).
-- BRISQUE scores are sign-reversed before correlation so that higher values always mean better quality.
-- Frame-based metrics are averaged over each sequence (PSNR-VR: mean of per-frame dB values). FovVideoVDP produces a sequence-level score.
+<img width="657" height="334" alt="image" src="https://github.com/user-attachments/assets/57968bc1-775e-4b75-946e-d5f4e34f7561" />
 
----
+All test were done on google colab using the Tesla T4 GPU 
 
-## Related Work
+- **HOG+SVM (no pretraining)**
+- **CNN from scratch (lightweight)**
+- **YOLOv8**, **YOLOv11** (modern one-stage)
+- **Faster R-CNN** (two-stage)
+- **RF-DETR** (transformer)
+Each baseline probes a different dependency on context/periphery; the filtered data exposes redundancies and helps most models converge faster with better mAP.
 
-This dataset builds on our earlier study of perceptually optimised wide-angle VR transmission:
+### Why these algorithms?
 
-> A. Mozhaeva, N. Alani, I. Vlasuyk, S. J. Rogers, A. Potashnikov, and L. Streeter, "Enhancing wide-angle VR video transmission using human perception," *Proc. IVCNZ*, 2025, pp. 267–272. doi: [10.1109/IVCNZ67716.2025.11281650](https://doi.org/10.1109/IVCNZ67716.2025.11281650)
+- **HOG+SVM (classical, no pretraining):**  
+  A strong, transparent baseline that captures local edge/gradient cues — and mirrors early human visual processing — without any large-scale pretraining. It reveals how much signal the preprocessing alone contributes.  
 
----
+- **Lightweight CNN from scratch:**  
+  Isolates the effect of simplified visual input on representation learning when no external priors are used. Good for showing convergence and stability boosts.  
 
-## Citation
+- **YOLOv8 / YOLOv11 (modern one-stage detectors):**  
+  Stress-test perception-aware preprocessing under fast, real-time oriented pipelines that often rely on contextual/peripheral cues — the method exposes and trims redundancy here.  
 
-If you use this data, please cite:
+- **Faster R-CNN (two-stage detector):**  
+  Complements YOLO by examining region proposal behavior under simplified frames; useful for evaluating mAP@0.5 and mAP@0.5:0.95.  
 
-```bibtex
-@inproceedings{rogers2026psnrvr,
-  author    = {Rogers, Steven J. and Weti, Tainui and Voronkov, Gleb A. and Delmas, Patrice and Mozhaeva, Anastasia},
-  title     = {{PSNR-VR}: A Full-Reference Quality Metric for Wide-Angle {VR} Video
-               Incorporating Human Visual System Models},
-  year      = {2026},
-  note      = {Under review}
-}
-```
-
-Please also cite the LIVE-FBT-FCVR database:
-
-```bibtex
-@article{jin2021livefbtfcvr,
-  author  = {Jin, Yize and Chen, Meixu and Goodall, Todd and Patney, Anjul and Bovik, Alan C.},
-  title   = {Subjective and Objective Quality Assessment of {2D} and {3D} Foveated Video
-             Compression in Virtual Reality},
-  journal = {IEEE Trans. Image Process.},
-  volume  = {30},
-  pages   = {5905--5919},
-  year    = {2021},
-  doi     = {10.1109/TIP.2021.3087322}
-}
-```
+- **RF-DETR (transformer-based):**  
+  Tests global attention under reduced peripheral clutter; demonstrates that removing imperceptible content can improve transformer detection quality and efficiency.  
 
 ---
 
-## License
+**Empirical headline:**  
+Psychovisual preprocessing reduced dataset redundancy (~15%) and improved average prediction accuracy by **~3.5%**, while also speeding convergence and lowering compute across all tested models.  
 
-Data in this repository is released under **[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)**. LIVE-FBT-FCVR content remains subject to its original licence.
 
-## Contact
+---
 
-Steven J. Rogers, Eastern Institute of Technology, <srogers@eit.ac.nz>
+## Results (high level)
+Across all models, training on the **perception-filtered** set improved accuracy and reduced inference cost. Average gain ≈ **+3.5%** with faster convergence and lower memory usage; see paper figs/tables for details. 
+
+<img width="685" height="335" alt="image" src="https://github.com/user-attachments/assets/74643bcd-8cd8-4b96-828a-21fa2a003412" />
+<img width="649" height="590" alt="image" src="https://github.com/user-attachments/assets/be8fd913-e140-4265-88a9-74904a4d0af6" />
+
+## Test Frame Comparisons
+
+| Unfiltered Test | Filtered Test | Original |
+|-----------------|---------------|----------|
+| <img src="data/samples/test_images/frame_0111unfiltered.png" width="250"/> | <img src="data/samples/test_images/frame_0111filtered.png" width="250"/> | <img src="data/samples/test_images/frame_0111original.png" width="250"/> |
+| <img src="data/samples/test_images/frame_0133unfiltered.png" width="250"/> | <img src="data/samples/test_images/frame_0133filtered.png" width="250"/> | <img src="data/samples/test_images/frame_0133original.png" width="250"/> |
+| <img src="data/samples/test_images/frame_0316unfiltered.png" width="250"/> | <img src="data/samples/test_images/frame_0316filtered.png" width="250"/> | <img src="data/samples/test_images/frame_0316original.png" width="250"/> |
+
+---
+
+## Quickstart
+
+### 1) Environment
+```bash
+# Python 3.11 recommended
+
